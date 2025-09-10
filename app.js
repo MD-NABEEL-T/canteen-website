@@ -1,9 +1,3 @@
-  //1. app.js
-  
-  
-  // --- Plus / Minus functionality -----------------------------------------
-
-  // app.js (realtime - matches your index.html structure)
 import {
   ref, push, set, onValue, runTransaction, query, orderByChild, equalTo, get
 } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-database.js";

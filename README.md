@@ -1,11 +1,1 @@
-DEVELOPED A WEBSITE FOR QUEUE MANAGEMENT IN COLLEGE CANTEEN
-
-BY :
-
-MOHAMMED NABEEL T (LEAD)
-
-MOHAMMED AASIF
-
-MOHAMMED ABUZAR J
-
-
+i have developed a website for reducing canteen queue in college
