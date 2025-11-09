@@ -1,2 +1,7 @@
-{ "projects":{ 
-   "default": "canteen-app-de2d1"  }}
+{
+  "projects": {
+    "default": "college-canteen-471913"
+  },
+  "targets": {},
+  "etags": {}
+}

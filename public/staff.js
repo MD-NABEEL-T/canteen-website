@@ -10,9 +10,11 @@ import {
   const servedTbody = document.getElementById("servedOrders");
   const clearHistoryBtn = document.getElementById("clearHistory");
 
+  // ✅ refs
   const ordersRef = ref(window.db, "orders");
   const servedRef = ref(window.db, "servedOrders");
 
+  // -------- Rendering --------
   function renderActive(orders) {
     activeTbody.innerHTML = "";
     if (!orders) {
@@ -22,7 +24,7 @@ import {
 
     Object.entries(orders).forEach(([id, order]) => {
       const status = order.status || "Pending";
-      if (status === "Served") return;
+      if (status === "Served") return; // don't show served ones here
 
       const itemsHtml = Array.isArray(order.items)
         ? order.items.map(it => `${it.name || it.dishName} × ${it.qty || 1} = ₹${it.amount || it.price || 0}`).join("<br>")
@@ -72,19 +74,24 @@ import {
     });
   }
 
+  // -------- Actions --------
   async function markPrepared(id) {
     await update(ref(window.db, `orders/${id}`), { status: "Prepared" });
   }
 
   async function markServed(id) {
-    // get order
     const snap = await get(ref(window.db, `orders/${id}`));
     if (!snap.exists()) return;
     const order = snap.val();
-    // remove from orders (active)
-    await remove(ref(window.db, `orders/${id}`));
+
+    // ✅ mark as served
+    const servedOrder = { ...order, status: "Served", time: order.time || new Date().toLocaleString() };
+
     // push into servedOrders
-    await push(servedRef, { ...order, status: "Served", time: order.time || new Date().toLocaleString() });
+    await push(servedRef, servedOrder);
+
+    // remove from active orders
+    await remove(ref(window.db, `orders/${id}`));
   }
 
   async function deleteOrder(id) {
@@ -97,7 +104,7 @@ import {
     await remove(servedRef);
   }
 
-  // event delegation for action buttons
+  // -------- Event Delegation --------
   activeTbody.addEventListener("click", async (e) => {
     const prepareBtn = e.target.closest(".prepare-btn");
     const serveBtn = e.target.closest(".serve-btn");
@@ -114,13 +121,14 @@ import {
 
   if (clearHistoryBtn) clearHistoryBtn.addEventListener("click", clearHistory);
 
-  // realtime listeners
+  // -------- Realtime listeners --------
   onValue(ordersRef, snap => {
     renderActive(snap.val());
   });
+
   onValue(servedRef, snap => {
     renderServed(snap.val());
   });
 
-  console.log("staff.js realtime listener active");
+  console.log("✅ staff.js realtime listener active");
 })();
